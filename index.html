@@ -71,6 +71,10 @@ td.r,th.r{text-align:right;white-space:nowrap}
 .detail{color:var(--muted);font-size:13px}
 footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
 [hidden]{display:none!important}
+.prog{display:flex;flex-direction:column;gap:10px}
+.prog .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.prog .pc{font-family:var(--display);font-weight:800;font-size:clamp(26px,5vw,34px)}
+.tag{font-size:12px;color:var(--muted)}
 </style>
 <style>body{margin:0}</style>
 </head>
@@ -95,6 +99,21 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
       <div id="disBox"><span class="k"><i style="background:var(--free)"></i>Disponible</span><span class="v num" id="vDis">—</span><span class="p" id="pDis"></span></div>
     </div>
   </div>
+
+  <section id="avSec" hidden>
+    <h2>Avance de obra</h2>
+    <div class="budget prog">
+      <div class="row"><span class="eyebrow">Avance general</span><span class="pc num" id="avTot">—</span></div>
+      <div class="bar" role="img" id="avBar"><span id="avBarP" style="background:var(--paid)"></span></div>
+      <span class="tag" id="avNota"></span>
+    </div>
+    <div class="cats" id="avDet"></div>
+  </section>
+
+  <section id="ingSec" hidden>
+    <h2>Dinero entregado</h2>
+    <div class="cats" id="ingDet"></div>
+  </section>
 
   <section id="presSec" hidden>
     <h2>Presupuesto y adicionales</h2>
@@ -121,7 +140,7 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
 <script>
 const fmt = n => "$ " + Math.round(n).toLocaleString("es-CO");
 const esc = v => String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-/*DATA*/const DATA = {"corte": "2026-09-29", "presupuesto": 55612416, "compras": [{"f": "10/09/2026", "c": "Varilla 12 mm (22), alambre, plástico negro, discos, polines, barra, puntillas 2½\" y transporte", "p": "Ferretería Industrial-izada (Alexander Ramírez)", "t": 966500, "pg": 966500, "cat": "Materiales"}, {"f": "12/09/2026", "c": "Mano de obra (pagos semanales)", "p": "Juan Arley Cruz", "t": 2040000, "pg": 2040000, "cat": "Mano de obra"}, {"f": "21/09/2026", "c": "Polín 4×4 (8), manguera de nivel, hilo de albañil y transporte", "p": "Ferretería Industrial-izada (Alexander Ramírez)", "t": 123000, "pg": 123000, "cat": "Materiales"}, {"f": "21/09/2026", "c": "Guantes de carnaza reforzados", "p": "Ferretería Industrial-izada (Alexander Ramírez)", "t": 10000, "pg": 10000, "cat": "Otros"}, {"f": "28/09/2026", "c": "Varilla 1/2\" (18), fleje 15×15 9 mm (180), cemento Holcim (3), discos de corte y empaque", "p": "Ferretería Industrial-izada (Alexander Ramírez)", "t": 1001080, "pg": 1001080, "cat": "Materiales"}], "presupuestoDetalle": {"adiciones": [{"concepto": "Diferencia piso", "valor": 107416}, {"concepto": "Tanque de agua", "valor": 1560000}, {"concepto": "Angeo en ventana de la cocina", "valor": 75000}, {"concepto": "Estudio de suelos", "valor": 1200000}, {"concepto": "Gestión documental de planos para la licencia", "valor": 650000}, {"concepto": "Mejoramiento del terreno", "valor": 550000}], "base": 50720000, "fuente": "Presupuesto TAUKAR 29/01/2026 ($54.412.416) + adicionales confirmados por Andrés el 29/09/2026", "transporte": 750000}};/*END*/
+/*DATA*/const DATA = {"corte": "2026-09-29", "presupuesto": 55612416, "compras": [{"f": "10/09/2026", "c": "Varilla 12 mm (22), alambre, plástico negro, discos, polines, barra, puntillas 2½\" y transporte", "p": "Ferretería Industrial-izada (Alexander Ramírez)", "t": 966500, "pg": 966500, "cat": "Materiales"}, {"f": "12/09/2026", "c": "Mano de obra (pagos semanales)", "p": "Juan Arley Cruz", "t": 2040000, "pg": 2040000, "cat": "Mano de obra"}, {"f": "21/09/2026", "c": "Polín 4×4 (8), manguera de nivel, hilo de albañil y transporte", "p": "Ferretería Industrial-izada (Alexander Ramírez)", "t": 123000, "pg": 123000, "cat": "Materiales"}, {"f": "21/09/2026", "c": "Guantes de carnaza reforzados", "p": "Ferretería Industrial-izada (Alexander Ramírez)", "t": 10000, "pg": 10000, "cat": "Otros"}, {"f": "28/09/2026", "c": "Varilla 1/2\" (18), fleje 15×15 9 mm (180), cemento Holcim (3), discos de corte y empaque", "p": "Ferretería Industrial-izada (Alexander Ramírez)", "t": 1001080, "pg": 1001080, "cat": "Materiales"}], "presupuestoDetalle": {"adiciones": [{"concepto": "Diferencia piso", "valor": 107416}, {"concepto": "Tanque de agua", "valor": 1560000}, {"concepto": "Angeo en ventana de la cocina", "valor": 75000}, {"concepto": "Estudio de suelos", "valor": 1200000}, {"concepto": "Gestión documental de planos para la licencia", "valor": 650000}, {"concepto": "Mejoramiento del terreno", "valor": 550000}], "base": 50720000, "fuente": "Presupuesto TAUKAR 29/01/2026 ($54.412.416) + adicionales confirmados por Andrés el 29/09/2026", "transporte": 750000}, "ingresos": [{"n": "Anticipo", "fecha": "", "valor": 6000000}, {"n": "Pago 2", "fecha": "", "valor": 7700000}, {"n": "Pagos 3 y 4", "fecha": "", "valor": 7050000, "nota": "Valor conjunto; falta el detalle de cada pago"}, {"n": "Pago 5 · gestión de planos para la licencia y estudio de suelos", "fecha": "2026-05-08", "valor": 1850000}], "avance": {"actualizado": "", "capitulos": [{"n": "Diseños, planimetría y gestión", "valor": 4460000, "avance": null, "nota": ""}, {"n": "Cimentación", "valor": 3340000, "avance": null, "nota": ""}, {"n": "Entrepiso", "valor": 14267000, "avance": null, "nota": ""}, {"n": "Muros", "valor": 9780000, "avance": null, "nota": ""}, {"n": "Ventanas", "valor": 1695000, "avance": null, "nota": ""}, {"n": "Puertas", "valor": 5785000, "avance": null, "nota": ""}, {"n": "Cubierta", "valor": 7515000, "avance": null, "nota": ""}, {"n": "Mobiliario", "valor": 650000, "avance": null, "nota": ""}, {"n": "Red eléctrica", "valor": 1008000, "avance": null, "nota": ""}, {"n": "Red hidrosanitaria", "valor": 2220000, "avance": null, "nota": ""}, {"n": "Transporte", "valor": 750000, "avance": null, "nota": ""}, {"n": "Adicionales", "valor": 4142416, "avance": null, "nota": ""}]}};/*END*/
 const compras = DATA.compras;
 
 const pct=v=>(v*100).toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
@@ -151,6 +170,30 @@ const pct=v=>(v*100).toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
   if(ad.length){h+=`<div class="cat"><span class="name">Adicionales</span><span class="amt num">${fmt(tAd)}</span><span class="sub">${ad.map(x=>`${esc(x.concepto)}: ${fmt(x.valor)}`).join(" · ")}</span></div>`;}
   h+=`<div class="cat"><span class="name">Total presupuesto</span><span class="amt num"><strong>${fmt(pd.base+(pd.transporte||0)+tAd)}</strong></span></div>`;
   document.getElementById("presDet").innerHTML=h; document.getElementById("presSec").hidden=false;
+})();
+
+(function(){
+  const av=DATA.avance; if(!av||!(av.capitulos||[]).length) return;
+  const caps=av.capitulos, tv=caps.reduce((a,c)=>a+c.valor,0);
+  const rep=caps.filter(c=>c.avance!==null&&c.avance!==undefined);
+  const tot=tv?caps.reduce((a,c)=>a+c.valor*((c.avance||0)/100),0)/tv*100:0;
+  const f1=v=>v.toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
+  document.getElementById("avTot").textContent=rep.length?f1(tot):"Por reportar";
+  document.getElementById("avBarP").style.width=tot+"%";
+  document.getElementById("avBar").setAttribute("aria-label","Avance general "+f1(tot));
+  document.getElementById("avNota").textContent=(rep.length?"Ponderado según el valor de cada capítulo del presupuesto. ":"")+(av.actualizado?"Actualizado: "+av.actualizado.split("-").reverse().join("/")+".":"");
+  document.getElementById("avDet").innerHTML=caps.map(c=>{const v=c.avance;const done=v===100;
+    return `<div class="cat"><span class="name">${esc(c.n)}</span><span class="amt num">${v===null||v===undefined?'<span class="tag">Por reportar</span>':f1(v)}</span>
+    <span class="mini" style="width:100%"><span style="width:${v||0}%;background:var(--paid)"></span></span>
+    ${c.nota?`<span class="sub">${done?"Completado · ":""}${esc(c.nota)}</span>`:done?'<span class="sub">Completado</span>':""}</div>`}).join("");
+  document.getElementById("avSec").hidden=false;
+})();
+(function(){
+  const ing=DATA.ingresos; if(!ing||!ing.length) return;
+  const t=ing.reduce((a,x)=>a+x.valor,0), pres=DATA.presupuesto||0;
+  let h=ing.map(x=>`<div class="cat"><span class="name">${esc(x.n)}</span><span class="amt num">${fmt(x.valor)}</span>${x.fecha||x.nota?`<span class="sub">${x.fecha?x.fecha.split("-").reverse().join("/"):""}${x.fecha&&x.nota?" · ":""}${esc(x.nota||"")}</span>`:""}</div>`).join("");
+  h+=`<div class="cat"><span class="name">Total entregado</span><span class="amt num"><strong>${fmt(t)}</strong></span>${pres?`<span class="sub">${(t/pres*100).toLocaleString("es-CO",{maximumFractionDigits:1})} % del presupuesto · saldo por entregar ${fmt(pres-t)}</span>`:""}</div>`;
+  document.getElementById("ingDet").innerHTML=h; document.getElementById("ingSec").hidden=false;
 })();
 
 const rows = document.getElementById("rows");
