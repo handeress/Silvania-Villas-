@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Obra __PROYECTO__</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F2F3EF; --surface:#FFFFFF; --ink:#1D2622; --muted:#5E6B64; --line:#D9DDD6;
+  --paid:#3F6B4F; --pend:#B5782F; --free:#C9D0C8; --soft:#E7EBE4;
+  --display:"Epilogue", "Helvetica Neue", Arial, sans-serif;
+  --body:"IBM Plex Sans", "Segoe UI", Roboto, Arial, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#131A17; --surface:#1B2420; --ink:#E6EBE7; --muted:#9AA8A0; --line:#2E3A34;
+    --paid:#6FA383; --pend:#D69B52; --free:#3A4640; --soft:#222C27;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#131A17; --surface:#1B2420; --ink:#E6EBE7; --muted:#9AA8A0; --line:#2E3A34;
+  --paid:#6FA383; --pend:#D69B52; --free:#3A4640; --soft:#222C27;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:880px;margin:0 auto;padding-inline:20px;padding-block:36px 56px;display:flex;flex-direction:column;gap:40px}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,6vw,46px);font-weight:800;letter-spacing:-.02em;line-height:1.05}
+h2{font-size:20px;font-weight:700}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+header{display:flex;flex-direction:column;gap:10px}
+header p{margin:0;color:var(--muted);max-width:60ch}
+
+.budget{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:20px}
+.budget-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px}
+.budget-top .big{font-family:var(--display);font-weight:800;font-size:clamp(26px,5vw,34px)}
+.bar{display:flex;height:22px;border-radius:4px;overflow:hidden;background:var(--free)}
+.bar span{display:block;height:100%}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px}
+.legend div{display:flex;flex-direction:column;gap:2px}
+.legend .k{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.legend .k i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.legend .v{font-size:18px;font-weight:500}
+.legend .p{font-size:12px;color:var(--muted)}
+
+section{display:flex;flex-direction:column;gap:14px}
+section > p.note{margin:0;color:var(--muted);font-size:13px}
+.cats{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.cat{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.cat .name{font-weight:600}
+.cat .amt{text-align:right}
+.cat .mini{grid-column:1/-1;display:flex;height:6px;border-radius:3px;overflow:hidden;background:var(--soft)}
+.cat .mini span{display:block;height:100%}
+.cat .sub{grid-column:1/-1;font-size:13px;color:var(--muted)}
+
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--soft)}
+tr:last-child td{border-bottom:0}
+td.r,th.r{text-align:right;white-space:nowrap}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.pill.ok{background:color-mix(in srgb,var(--paid) 16%,transparent);color:var(--paid)}
+.pill.pe{background:color-mix(in srgb,var(--pend) 18%,transparent);color:var(--pend)}
+.detail{color:var(--muted);font-size:13px}
+footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+[hidden]{display:none!important}
+</style>
+<style>body{margin:0}</style>
+</head>
+<body>
+
+<main class="wrap">
+  <header>
+    <span class="eyebrow">Proyecto · __PROYECTO__</span>
+    <h1>Estado de cuentas de la obra</h1>
+    <p>Resumen del presupuesto y de las compras registradas para el proyecto. Corte de revisión: <strong id="corte">—</strong>. Valores en pesos colombianos.</p>
+  </header>
+
+  <div class="budget" aria-label="Ejecución del presupuesto">
+    <div class="budget-top">
+      <span class="eyebrow" id="presLbl">Presupuesto acordado</span>
+      <span class="big num" id="pres">—</span>
+    </div>
+    <div class="bar" role="img" id="bar"><span id="barP" style="background:var(--paid)"></span><span id="barS" style="background:var(--pend)"></span></div>
+    <div class="legend">
+      <div><span class="k"><i style="background:var(--paid)"></i>Pagado</span><span class="v num" id="vPag">—</span><span class="p" id="pPag"></span></div>
+      <div><span class="k"><i style="background:var(--pend)"></i>Comprometido por pagar</span><span class="v num" id="vSal">—</span><span class="p" id="pSal"></span></div>
+      <div id="disBox"><span class="k"><i style="background:var(--free)"></i>Disponible</span><span class="v num" id="vDis">—</span><span class="p" id="pDis"></span></div>
+    </div>
+  </div>
+
+  <section id="presSec" hidden>
+    <h2>Presupuesto y adicionales</h2>
+    <div class="cats" id="presDet"></div>
+  </section>
+
+  <section>
+    <h2>Compras por frente de obra</h2>
+    <div class="cats" id="cats"></div>
+  </section>
+
+  <section>
+    <h2>Detalle de compras y pagos</h2>
+    <p class="note" id="nota"></p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Fecha</th><th>Concepto</th><th>Proveedor</th><th class="r">Valor</th><th class="r">Pagado</th><th>Estado</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script>
+const fmt = n => "$ " + Math.round(n).toLocaleString("es-CO");
+const esc = v => String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+/*DATA*/const DATA = __DATA__;/*END*/
+const compras = DATA.compras;
+
+const pct=v=>(v*100).toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
+(function(){
+  const conPres=!!DATA.presupuesto;
+  const pres=DATA.presupuesto||compras.reduce((a,x)=>a+x.t,0)||1, pag=compras.reduce((a,x)=>a+x.pg,0), cont=compras.reduce((a,x)=>a+x.t,0);
+  const conSaldo=compras.filter(x=>x.t>x.pg), sal=conSaldo.reduce((a,x)=>a+x.t-x.pg,0), dis=pres-cont;
+  const [y,m,d]=DATA.corte.split("-");
+  document.getElementById("corte").textContent=new Date(+y,m-1,+d).toLocaleDateString("es-CO",{day:"numeric",month:"long",year:"numeric"});
+  document.getElementById("pres").textContent=fmt(conPres?pres:cont);
+  if(!conPres){document.getElementById("presLbl").textContent="Total contratado";document.getElementById("disBox").hidden=true;}
+  const base=conPres?" del presupuesto":" de lo contratado";
+  document.getElementById("barP").style.width=(pag/pres*100)+"%";
+  document.getElementById("barS").style.width=(sal/pres*100)+"%";
+  document.getElementById("bar").setAttribute("aria-label",conPres?`Pagado ${pct(pag/pres)}, comprometido por pagar ${pct(sal/pres)}, disponible ${pct(dis/pres)}`:`Pagado ${pct(pag/pres)}, por pagar ${pct(sal/pres)}`);
+  document.getElementById("vPag").textContent=fmt(pag); document.getElementById("pPag").textContent=pct(pag/pres)+base;
+  document.getElementById("vSal").textContent=fmt(sal); document.getElementById("pSal").textContent=conSaldo.length?`Saldos de ${conSaldo.length} ${conSaldo.length===1?"compra":"compras"}`:"Sin saldos pendientes";
+  document.getElementById("vDis").textContent=fmt(dis); document.getElementById("pDis").textContent=pct(dis/pres)+base;
+  document.getElementById("nota").innerHTML=`${compras.length} compras registradas. Total contratado: <span class="num">${fmt(cont)}</span>.`;
+})();
+
+(function(){
+  const pd=DATA.presupuestoDetalle; if(!pd) return;
+  const line=(n,v,sub)=>`<div class="cat"><span class="name"${sub?' style="font-weight:400"':''}>${esc(n)}</span><span class="amt num">${fmt(v)}</span></div>`;
+  let h=line("Presupuesto base",pd.base)+line("Transporte",pd.transporte||0);
+  const ad=pd.adiciones||[]; const tAd=ad.reduce((a,x)=>a+x.valor,0);
+  if(ad.length){h+=`<div class="cat"><span class="name">Adicionales</span><span class="amt num">${fmt(tAd)}</span><span class="sub">${ad.map(x=>`${esc(x.concepto)}: ${fmt(x.valor)}`).join(" · ")}</span></div>`;}
+  h+=`<div class="cat"><span class="name">Total presupuesto</span><span class="amt num"><strong>${fmt(pd.base+(pd.transporte||0)+tAd)}</strong></span></div>`;
+  document.getElementById("presDet").innerHTML=h; document.getElementById("presSec").hidden=false;
+})();
+
+const rows = document.getElementById("rows");
+compras.forEach(x=>{
+  const saldo = x.t - x.pg;
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td class="num">${esc(x.f)}</td><td>${esc(x.c)}</td><td class="detail">${esc(x.p)}</td>
+    <td class="r num">${fmt(x.t)}</td><td class="r num">${fmt(x.pg)}</td>
+    <td>${saldo>0?`<span class="pill pe">Saldo ${fmt(saldo)}</span>`:`<span class="pill ok">Pagado</span>`}</td>`;
+  rows.appendChild(tr);
+});
+
+const groups = {};
+compras.forEach(x=>{
+  const g = groups[x.cat] ||= {t:0,pg:0,n:0};
+  g.t+=x.t; g.pg+=x.pg; g.n++;
+});
+const max = Math.max(...Object.values(groups).map(g=>g.t));
+const cats = document.getElementById("cats");
+Object.entries(groups).sort((a,b)=>b[1].t-a[1].t).forEach(([name,g])=>{
+  const saldo = g.t-g.pg;
+  const d = document.createElement("div");
+  d.className="cat";
+  d.innerHTML = `<span class="name">${esc(name)}</span><span class="amt num">${fmt(g.t)}</span>
+    <span class="mini" style="width:${(g.t/max*100).toFixed(1)}%"><span style="width:${(g.pg/g.t*100).toFixed(1)}%;background:var(--paid)"></span><span style="width:${(saldo/g.t*100).toFixed(1)}%;background:var(--pend)"></span></span>
+    <span class="sub">${g.n} ${g.n===1?"compra":"compras"} · ${saldo>0?`pagado ${fmt(g.pg)}, saldo ${fmt(saldo)}`:"pagado en su totalidad"}</span>`;
+  cats.appendChild(d);
+});
+</script>
+
+</body>
+</html>
