@@ -50,6 +50,9 @@ for c in sorted(d["compras"], key=lambda x: (x["fecha"], x["id"])):
     })
 
 data = {"corte": d["corte"], "presupuesto": d.get("presupuesto"), "compras": compras}
+# Serie de pagos en el tiempo (solo fecha, valor y si es mano de obra; sin referencias).
+cat = {c["id"]: c.get("categoria") for c in d["compras"]}
+data["serie"] = sorted([{"f": p["fecha"], "v": p["valor"], "mo": cat.get(p["compraId"]) == "Mano de obra"} for p in d["pagos"] if p.get("fecha")], key=lambda x: x["f"])
 if d.get("presupuestoDetalle"):
     data["presupuestoDetalle"] = d["presupuestoDetalle"]
 for k in ("ingresos", "avance", "fotos"):
