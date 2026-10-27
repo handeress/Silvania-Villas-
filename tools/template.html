@@ -51,6 +51,11 @@ header p{margin:0;color:var(--muted);max-width:60ch}
 
 section{display:flex;flex-direction:column;gap:14px}
 section > p.note{margin:0;color:var(--muted);font-size:13px}
+.docs{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.doc{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none}
+.doc:hover .dn{text-decoration:underline}
+.doc .dn{font-weight:600}.doc .dd{font-size:13px;color:var(--muted)}
+.doc .dt{font-size:12px;color:var(--muted);white-space:nowrap}
 .cats{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
 .cat{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;padding:14px 0;border-bottom:1px solid var(--line)}
 .cat .name{font-weight:600}
@@ -147,6 +152,11 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
   <section id="presSec" hidden>
     <h2>Presupuesto y adicionales</h2>
     <div class="cats" id="presDet"></div>
+  </section>
+
+  <section id="docSec" hidden>
+    <h2>Documentos</h2>
+    <div class="docs" id="docDet"></div>
   </section>
 
   <section id="secSerie" hidden>
@@ -317,6 +327,11 @@ Object.entries(groups).sort((a,b)=>b[1].t-a[1].t).forEach(([name,g])=>{
     tip.style.left=Math.min(r.width-90,Math.max(90,e.clientX-r.left))+"px"; tip.style.top=(e.clientY-r.top)+"px"; tip.style.opacity=1;});
   svg.addEventListener("pointerleave",()=>tip.style.opacity=0);
   document.getElementById("serieRows").innerHTML=W.map((w,i)=>`<tr><td>Semana ${i+1} (${sl(w.d)} – ${sl(new Date(w.d.getTime()+6*day))})</td><td class="r num">${fmt(w.v)}</td></tr>`).join("")+`<tr><td><strong>Total</strong></td><td class="r num"><strong>${fmt(tot)}</strong></td></tr>`;
+})();
+(function(){
+  const d=DATA.documentos; if(!d||!d.length) return;
+  document.getElementById("docDet").innerHTML=d.map(x=>{const ext=(x.archivo.split(".").pop()||"").toUpperCase();return `<a class="doc" href="${esc(x.archivo)}" target="_blank" rel="noopener"><span><span class="dn">${esc(x.n)}</span>${x.desc?`<br><span class="dd">${esc(x.desc)}</span>`:""}</span><span class="dt">${ext}${x.fecha?" · "+x.fecha.split("-").reverse().join("/"):""}</span></a>`}).join("");
+  document.getElementById("docSec").hidden=false;
 })();
 </script>
 

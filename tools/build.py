@@ -55,7 +55,7 @@ cat = {c["id"]: c.get("categoria") for c in d["compras"]}
 data["serie"] = sorted([{"f": p["fecha"], "v": p["valor"], "mo": cat.get(p["compraId"]) == "Mano de obra"} for p in d["pagos"] if p.get("fecha")], key=lambda x: x["f"])
 if d.get("presupuestoDetalle"):
     data["presupuestoDetalle"] = d["presupuestoDetalle"]
-for k in ("ingresos", "avance", "fotos"):
+for k in ("ingresos", "avance", "fotos", "documentos"):
     if d.get(k):
         data[k] = d[k]
 # Del dinero entregado solo se publica concepto, fecha, valor y nota (nunca referencias ni soportes).
