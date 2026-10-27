@@ -118,6 +118,7 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
       <div><span class="k"><i style="background:var(--paid)"></i>Pagado</span><span class="v num" id="vPag">—</span><span class="p" id="pPag"></span></div>
       <div><span class="k"><i style="background:var(--pend)"></i>Comprometido por pagar</span><span class="v num" id="vSal">—</span><span class="p" id="pSal"></span></div>
       <div id="disBox"><span class="k"><i style="background:var(--free)"></i>Disponible</span><span class="v num" id="vDis">—</span><span class="p" id="pDis"></span></div>
+      <div id="entBox" hidden><span class="k">Dinero entregado</span><span class="v num" id="vEnt">—</span><span class="p" id="pEnt"></span></div>
     </div>
   </div>
 
@@ -200,6 +201,8 @@ const pct=v=>(v*100).toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
   document.getElementById("vPag").textContent=fmt(pag); document.getElementById("pPag").textContent=pct(pag/pres)+base;
   document.getElementById("vSal").textContent=fmt(sal); document.getElementById("pSal").textContent=conSaldo.length?`Saldos de ${conSaldo.length} ${conSaldo.length===1?"compra":"compras"}`:"Sin saldos pendientes";
   document.getElementById("vDis").textContent=fmt(dis); document.getElementById("pDis").textContent=pct(dis/pres)+base;
+  const ingT=(DATA.ingresos||[]).reduce((a,x)=>a+x.valor,0);
+  if(ingT){document.getElementById("vEnt").textContent=fmt(ingT);document.getElementById("pEnt").textContent=conPres?pct(ingT/pres)+base+" · por entregar "+fmt(pres-ingT):"";document.getElementById("entBox").hidden=false;}
   document.getElementById("nota").innerHTML=`${compras.length} compras registradas. Total contratado: <span class="num">${fmt(cont)}</span>.`;
 })();
 
