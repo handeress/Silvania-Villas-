@@ -42,6 +42,8 @@ header p{margin:0;color:var(--muted);max-width:60ch}
 .budget-top .big{font-family:var(--display);font-weight:800;font-size:clamp(26px,5vw,34px)}
 .bar{display:flex;height:22px;border-radius:4px;overflow:hidden;background:var(--free)}
 .bar span{display:block;height:100%}
+.ee{display:flex;flex-direction:column;gap:14px;border-top:1px solid var(--line);padding-top:20px}
+.ee .budget-top .v{font-size:20px;font-weight:600}
 .legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px}
 .legend div{display:flex;flex-direction:column;gap:2px}
 .legend .k{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
@@ -126,6 +128,14 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
       <div id="entBox" hidden><span class="k">Dinero entregado</span><span class="v num" id="vEnt">—</span><span class="p" id="pEnt"></span></div>
       <div id="difBox" hidden><span class="k">Entregado menos invertido</span><span class="v num" id="vDif">—</span><span class="p" id="pDif"></span></div>
       <div id="ejeBox" hidden><span class="k">Ejecutado en obra</span><span class="v num" id="vEje">—</span><span class="p" id="pEje"></span></div>
+    </div>
+    <div id="eeBox" class="ee" hidden>
+      <div class="budget-top"><span class="eyebrow">Ejecutado frente a entregado</span><span class="v num" id="eeDif">—</span></div>
+      <div class="bar" role="img" id="eeBar"><span id="eeBarE" style="background:var(--paid)"></span><span id="eeBarF" style="background:var(--pend)"></span></div>
+      <div class="legend">
+        <div><span class="k"><i style="background:var(--paid)"></i>Ejecutado</span><span class="v num" id="eeE">—</span><span class="p" id="eeEp"></span></div>
+        <div><span class="k"><i style="background:var(--pend)"></i>Falta ejecutar para quedar en cero</span><span class="v num" id="eeF">—</span><span class="p" id="eeFp"></span></div>
+      </div>
     </div>
   </div>
 
@@ -216,7 +226,14 @@ const pct=v=>(v*100).toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
   const ingT=(DATA.ingresos||[]).reduce((a,x)=>a+x.valor,0);
   if(ingT){document.getElementById("vEnt").textContent=fmt(ingT);document.getElementById("pEnt").textContent=conPres?pct(ingT/pres)+base+" · por entregar "+fmt(pres-ingT):"";document.getElementById("entBox").hidden=false;}
   if(ingT){const dif=ingT-pag;document.getElementById("vDif").textContent=fmt(dif);document.getElementById("pDif").textContent=dif>=0?"Entregado y aún no invertido":"Invertido por encima de lo entregado";document.getElementById("difBox").hidden=false;}
-  const av=DATA.avance;if(av&&(av.capitulos||[]).length){const ej=av.capitulos.reduce((a,c)=>a+c.valor*((c.avance||0)/100),0);document.getElementById("vEje").textContent=fmt(ej);document.getElementById("pEje").textContent=pct(ej/pres)+base+(av.actualizado?" · avance al "+av.actualizado.split("-").reverse().join("/"):"");document.getElementById("ejeBox").hidden=false;}
+  const av=DATA.avance;if(av&&(av.capitulos||[]).length){const ej=av.capitulos.reduce((a,c)=>a+c.valor*((c.avance||0)/100),0);document.getElementById("vEje").textContent=fmt(ej);document.getElementById("pEje").textContent=pct(ej/pres)+base+(av.actualizado?" · avance al "+av.actualizado.split("-").reverse().join("/"):"");document.getElementById("ejeBox").hidden=false;
+    if(ingT){const r=Math.min(ej/ingT,1),fal=Math.max(ingT-ej,0);
+      document.getElementById("eeDif").textContent=fmt(ingT-ej);
+      document.getElementById("eeBarE").style.width=(r*100)+"%";document.getElementById("eeBarF").style.width=((1-r)*100)+"%";
+      document.getElementById("eeBar").setAttribute("aria-label","Ejecutado "+pct(r)+" de lo entregado; falta "+pct(1-r));
+      document.getElementById("eeE").textContent=fmt(ej);document.getElementById("eeEp").textContent=pct(ej/ingT)+" de lo entregado";
+      document.getElementById("eeF").textContent=fmt(fal);document.getElementById("eeFp").textContent=fal>0?pct(fal/ingT)+" de lo entregado":"Lo ejecutado ya supera lo entregado en "+fmt(ej-ingT);
+      document.getElementById("eeBox").hidden=false;}}
   document.getElementById("nota").innerHTML=`${compras.length} compras registradas. Total contratado: <span class="num">${fmt(cont)}</span>.`;
 })();
 
